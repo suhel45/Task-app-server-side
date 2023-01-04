@@ -37,6 +37,27 @@ async function run(){
         const myTask = await TaskCollections.find(query).toArray();
         res.send(myTask);
         })
+        app.get('/my-task/:id',async(req,res)=>{
+          const id = req.params.id;
+          const query = {_id:ObjectId(id)}
+          const result = await TaskCollections.find(query).toArray();
+          res.send(result);
+        })
+
+        app.put('/update-task/:id',async(req,res)=>{
+          const id = req.params.id;
+          const filter = {_id:ObjectId(id)}
+          const user = req.body;
+          console.log(user)
+          const option = {upsert:true}
+          const updatedUser = {
+            $set:{
+              task:user.task
+            }
+          }
+          const result = await TaskCollections.updateOne(filter,updatedUser,option)
+          res.send(result);
+        })
         app.post('/completed-task',async(req,res)=>{
           const completedTask = req.body;
           const result = await completedTaskCollections.insertOne(completedTask);
